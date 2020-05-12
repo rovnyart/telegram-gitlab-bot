@@ -23,7 +23,7 @@ module.exports = (event) => {
     case 'note': {
       if (object_attributes.noteable_type !== 'MergeRequest') return '';
       return `
-        ${emoji.get(':imp:')}\nПроект: [${project.name}](${project.web_url})\nПользователь ${user.name} добавил [комментарий](${object_attributes.url}) к реквесту "${merge_request.title}"
+        ${emoji.get(':imp:')}\nПроект: [${project.name}](${project.web_url})\nПользователь ${user.name} добавил [комментарий](${object_attributes.url}) к реквесту "${merge_request.title}":\n"${object_attributes.note.length > 255 ? `${object_attributes.note.slice(0, 255)}...` : object_attributes.note}"
       `;
     }
     default: return '';
