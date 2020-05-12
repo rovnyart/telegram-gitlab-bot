@@ -16,15 +16,18 @@ const bot = new TelegramBot(token, {
 });
 
 bot.on('message', (message) => {
-  if (message.text === '/start' && message.chat.type === 'group') {
+  if (message.text === '/start' && ['group', 'supergroup'].includes(message.chat.type)) {
     groups.push(message.chat.id);
     logger.info(`Added to group ${message.chat.title} (id = ${message.chat.id})`);
   }
 });
 
+process.on('unhandledRejection', () => {
+  logger.error('unhandeled rejection');
+});
+
 server.post('/api', async (req, res) => {
   res.sendStatus(200);
-  console.log(req.body);
   const message = getEvent(req.body);
   await Promise.all(groups.map((group) => bot.sendMessage(group, message, { parse_mode: 'Markdown' })));
 });

@@ -5,19 +5,25 @@ const safeGetValue = (reference, value) => reference[value] || {};
 
 module.exports = (event) => {
   const {
-    object_kind, object_attributes, user, project,
+    object_kind, object_attributes, user, project, merge_request,
   } = event;
 
   switch (object_kind) {
-    case 'issue': {
+    case 'merge_request': {
       const ACTIONS = {
-        open: { text: 'opened', emoji: emoji.get(':white_check_mark:') },
-        close: { text: 'closed', emoji: emoji.get(':x:') },
-        reopen: { text: 'reopened', emoji: emoji.get(':arrows_counterclockwise:') },
-        update: { text: 'updated', emoji: emoji.get(':arrow_heading_up:') },
+        open: { text: 'открыт', emoji: emoji.get(':white_check_mark:') },
+        close: { text: 'закрыт', emoji: emoji.get(':x:') },
+        merge: { text: 'ВМЕРЖЕН', emoji: emoji.get(':muscle:') },
+        reopen: { text: 'переоткрыт', emoji: emoji.get(':repeat:') },
       };
       return `
-      ${safeGetValue(ACTIONS, object_attributes.action).emoji}\nProject: [${project.name}](${project.web_url})\nIssue [${object_attributes.title}](${object_attributes.url}) ${safeGetValue(ACTIONS, object_attributes.action).text} by ${user.name}
+      ${safeGetValue(ACTIONS, object_attributes.action).emoji}\nПроект: [${project.name}](${project.web_url})\nМерж-реквест [${object_attributes.title}](${object_attributes.url}) ${safeGetValue(ACTIONS, object_attributes.action).text} пользователем ${user.name}
+      `;
+    }
+    case 'note': {
+      if (object_attributes.noteable_type !== 'MergeRequest') return '';
+      return `
+        ${emoji.get(':imp:')}\nПроект: [${project.name}](${project.web_url})\nПользователь ${user.name} добавил [комментарий](${object_attributes.url}) к реквесту "${merge_request.title}"
       `;
     }
     default: return '';
