@@ -19,8 +19,6 @@ const groups = safeJsonParse(fs.readFileSync(path.resolve(__dirname, './groups.j
   if (err) logger.error(err);
 })) || [];
 
-console.log(groups);
-
 const bot = new TelegramBot(token, {
   polling: {
     params: {
@@ -44,6 +42,8 @@ bot.on('message', (message) => {
       if (err) logger.error(err);
     });
     bot.sendMessage(message.chat.id, 'Бот отключен');
+  } else if (message.text === 'нет') {
+    bot.sendMessage(message.chat.id, 'Ковидора ответ');
   }
 });
 
