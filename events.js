@@ -16,6 +16,7 @@ module.exports = (event) => {
         merge: { text: 'ВМЕРЖЕН', emoji: emoji.get(':muscle:') },
         reopen: { text: 'переоткрыт', emoji: emoji.get(':repeat:') },
       };
+      if (!Object.keys(ACTIONS.includes(object_attributes.action))) return '';
       return `
       ${safeGetValue(ACTIONS, object_attributes.action).emoji}\nПроект: [${project.name}](${project.web_url})\nМерж-реквест [${object_attributes.title}](${object_attributes.url}) ${safeGetValue(ACTIONS, object_attributes.action).text} пользователем ${user.name}
       `;

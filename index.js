@@ -55,6 +55,7 @@ server.post('/api', async (req, res) => {
   res.sendStatus(200);
   try {
     const message = getEvent(req.body);
+    if (!message) return;
     await Promise.all(groups.map((group) => bot.sendMessage(group, message, { parse_mode: 'Markdown' })));
   } catch (error) {
     logger.error(error);
