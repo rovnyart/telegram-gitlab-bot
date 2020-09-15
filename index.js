@@ -15,9 +15,12 @@ const safeJsonParse = (values) => {
   }
 };
 
-const groups = safeJsonParse(fs.readFileSync(path.resolve(__dirname, './groups.json'), (err) => {
-  if (err) logger.error(err);
-})) || [];
+let groups = [];
+try {
+  groups = safeJsonParse(fs.readFileSync(path.resolve(__dirname, './groups.json')));
+} catch (error) {
+  // do nothing
+}
 
 const bot = new TelegramBot(token, {
   polling: {
@@ -28,7 +31,7 @@ const bot = new TelegramBot(token, {
 });
 
 bot.on('message', (message) => {
-  if (message.text === '/start' && ['group', 'supergroup'].includes(message.chat.type) && !groups.includes(message.chat.id)) {
+  if (message.text === '/start' && ['group', 'supergroup'].includes(message.chat.type) && !groups.includes(message.chat.id)) { // eslint-disable-line max-len
     groups.push(message.chat.id);
     fs.writeFileSync(path.resolve(__dirname, './groups.json'), JSON.stringify(groups, null, 4), (err) => {
       if (err) logger.error(err);

@@ -11,12 +11,15 @@ module.exports = (event) => {
   switch (object_kind) {
     case 'merge_request': {
       const ACTIONS = {
-        open: { text: 'открыт', emoji: emoji.get(':white_check_mark:') },
+        open: { text: 'открыт', emoji: emoji.get(':bomb:') },
         close: { text: 'закрыт', emoji: emoji.get(':x:') },
         merge: { text: 'ВМЕРЖЕН', emoji: emoji.get(':muscle:') },
         reopen: { text: 'переоткрыт', emoji: emoji.get(':repeat:') },
+        approved: { text: 'АППРУВНУТ', emoji: emoji.get(':heart:') },
+        unapproved: { text: 'разаппрувнут', emoji: emoji.get(':broken_heart:') },
       };
-      if (!Object.keys(ACTIONS.includes(object_attributes.action))) return '';
+      console.log(event);
+      if (!Object.keys(ACTIONS).includes(object_attributes.action)) return '';
       return `
       ${safeGetValue(ACTIONS, object_attributes.action).emoji}\nПроект: [${project.name}](${project.web_url})\nМерж-реквест [${object_attributes.title}](${object_attributes.url}) ${safeGetValue(ACTIONS, object_attributes.action).text} пользователем ${user.name}
       `;
